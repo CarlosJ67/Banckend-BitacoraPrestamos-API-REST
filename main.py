@@ -50,7 +50,7 @@ async def get_usuarios():
 @app.post("/api/usuarios")
 async def inser_usuarios(usuario: Usuario):
     db.append(usuario)
-    return {id:usuario.id}
+    return {"id": usuario.id}
 
 @app.delete("/api/eliminar/{id}")
 async def delete_usuarios(id:UUID):
@@ -58,7 +58,7 @@ async def delete_usuarios(id:UUID):
         if usuario.id == id:
             db.remove(usuario)
             return
-        raise HTTPException(status_code=404, detail=f"Error al eliminar, id {id} falla.") 
+    raise HTTPException(status_code=404, detail=f"Error al eliminar, id {id} no encontrado.") 
     
 
 @app.put("/api/usuarios/{id}")
@@ -66,12 +66,12 @@ async def update_usuarios(user_update: UpdateUsuario, id:UUID):
     for usuario in db:
         if usuario.id == id:
             if user_update.nombre is not None:
-                usuario.name = user_update.nombre
+                usuario.nombre = user_update.nombre
             if user_update.apellidos is not None:
-                usuario.name = user_update.apellidos
+                usuario.apellidos = user_update.apellidos
             if user_update.genero is not None:
-                usuario.name = user_update.genero
+                usuario.genero = user_update.genero
             if user_update.roles is not None:
-                usuario.name = user_update.roles
-        return usuario.id
-        raise HTTPException(status_code=404, detail=f"Error al eliminar, id {id} falla.")
+                usuario.roles = user_update.roles
+            return usuario
+    raise HTTPException(status_code=404, detail=f"Error al actualizar, id {id} no encontrado.")
